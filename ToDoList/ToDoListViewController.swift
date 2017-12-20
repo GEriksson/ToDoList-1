@@ -10,8 +10,9 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
-    let itemArray = ["Sjukgymnast", "Trysil", "Bröllopsdag"]
-    var itemKlicked = [false, false, false]
+    
+    var itemArray = ["Sjukgymnast", "Trysil", "Bröllopsdag"]
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,11 +29,6 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        if itemKlicked[indexPath.row] == true {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
         cell.textLabel?.text = itemArray[indexPath.row]
         return cell
     }
@@ -40,15 +36,12 @@ class ToDoListViewController: UITableViewController {
     // Mark - TableView Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        print("Du klickade på: \(itemArray[indexPath.row])")
-        
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+            
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
-            itemKlicked[indexPath.row] = false
+
         } else {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-            itemKlicked[indexPath.row] = true
-            
         }
         
 //        if itemKlicked[indexPath.row] == true {
@@ -60,6 +53,34 @@ class ToDoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.reloadData()
     }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let ac = UIAlertController(title: "Add a ToDo List Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            // What will happen when the button is pressed on alert
+            self.itemArray.append(textField.text!)
+            self.tableView.reloadData()
+        }
+        
+        ac.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        
+        ac.addAction(action)
+        present(ac, animated: true, completion: nil)
 
+        
+    }
+    
 }
+
 
